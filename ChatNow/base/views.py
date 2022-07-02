@@ -1,20 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.db import models
+from .models import Room, Topic, Messages
 
-rooms = [
-    {'id':1, 'name':'Django Tutorials'},
-    {'id':2, 'name':'Bash Scripting'},
-    {'id':3, 'name':'Welcome to ChatNow'},
-]
 
 def home(request):
+    rooms = Room.objects.all()
     return render(request, 'base/home.html', {'rooms':rooms})
 
 def room(request, pk):
-    room = None
-    for i in rooms:
-        if i['id'] == int(pk):
-            room = i
-
+    room = Room.objects.get(id=pk)
     return render(request, "base/room.html", {'room':room})
 
