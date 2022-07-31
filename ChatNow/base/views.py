@@ -70,8 +70,9 @@ def home(request):
     )
     rooms_count = rooms.count()
     topics = Topic.objects.all()
+    room_messages = Messages.objects.filter(Q(room__topic__name__icontains=q))
 
-    context = {'rooms':rooms, 'topics':topics, 'rooms_count':rooms_count}
+    context = {'rooms':rooms, 'topics':topics, 'rooms_count':rooms_count, 'room_messages':room_messages}
     return render(request, 'base/home.html', context)
 
 def room(request, pk):
@@ -103,6 +104,15 @@ def createRoom(request):
     context = { 'form':form }
     return render(request, "base/createRoom.html", context)
 
+
+def userProfile(request, pk):
+    user = User.objects.get(id=pk)
+    rooms = user.room_set.all()
+    room_messages = user.messages_set.all()
+    topics = Topic.objects.all()
+
+    context = { 'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics }
+    return render(request, 'base/user_profile.html', context)
 
 @login_required(login_url='login')
 def updateRoom(request, pk):
